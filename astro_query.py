@@ -47,7 +47,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
 # (a) Gaia BP-RP vs. absolute G magnitude
 # Calculate absolute G magnitude using M_G = G + 5 * log10(parallax / 1000) + 5
-filtered_df['absolute_g'] = filtered_df['phot_g_mean_mag'] + 5 * np.log10(filtered_df['parallax'] / 1000) + 5
+filtered_df.loc[:, 'absolute_g'] = filtered_df['phot_g_mean_mag'] + 5 * np.log10(filtered_df['parallax'] / 1000) + 5
 bp_rp = filtered_df['phot_bp_mean_mag'] - filtered_df['phot_rp_mean_mag']
 
 ax1.scatter(bp_rp, filtered_df['absolute_g'], color='blue')
