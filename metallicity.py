@@ -64,7 +64,7 @@ plt.close(fig)
 rmse = np.sqrt(np.mean(residuals**2))
 
 # Generate 2D histograms for the x vs y plane
-bins = 50  # Define number of bins for 2D histogram
+bins = 100  # Define number of bins for 2D histogram
 
 # (a) 2D-histogram of the median simulated A(O)
 hist_a, xedges, yedges = np.histogram2d(x, y, bins=bins, weights=ao, density=False)
@@ -83,22 +83,29 @@ median_residuals = np.divide(hist_r, count_a, out=np.zeros_like(hist_r), where=c
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
 # (a) Median simulated A(O)
-im1 = axes[0].imshow(median_ao.T, origin='lower', aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], cmap='viridis')
+im1 = axes[0].imshow(median_ao.T, origin='lower', aspect='auto',
+                     extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], cmap='viridis', vmin=8, vmax=9.2)
 axes[0].set_title('Median Simulated A(O)')
 axes[0].set_xlabel('x (kpc)')
 axes[0].set_ylabel('y (kpc)')
+axes[0].set_aspect('equal')
 fig.colorbar(im1, ax=axes[0])
 
 # (b) Median fitted A(O)
-im2 = axes[1].imshow(median_fitted_ao.T, origin='lower', aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], cmap='viridis')
+im2 = axes[1].imshow(median_fitted_ao.T, origin='lower', aspect='auto',
+                     extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], cmap='viridis', vmin=8, vmax=9.2)
 axes[1].set_title('Median Fitted A(O)')
 axes[1].set_xlabel('x (kpc)')
+axes[1].set_aspect('equal')
 fig.colorbar(im2, ax=axes[1])
 
 # (c) Median residuals ∆A(O)
-im3 = axes[2].imshow(median_residuals.T, origin='lower', aspect='auto', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], cmap='coolwarm')
+im3 = axes[2].imshow(median_residuals.T, origin='lower', aspect='auto',
+                     extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]],
+                     cmap='coolwarm', vmin=-0.15, vmax=0.15)  
 axes[2].set_title('Median Residuals ∆A(O)')
 axes[2].set_xlabel('x (kpc)')
+axes[2].set_aspect('equal')
 fig.colorbar(im3, ax=axes[2])
 
 # Save 3-panel figure
