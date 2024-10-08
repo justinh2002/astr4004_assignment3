@@ -8,7 +8,7 @@ import os
 data_file = "/Users/justinhew/Downloads/nihao_uhd_simulation_g8.26e11_xyz_positions_and_oxygen_ao.fits"
 figures_dir = "./figures"
 
-# Create directories if not exist
+# Create directories
 os.makedirs(figures_dir, exist_ok=True)
 # with fits.open(data_file) as hdul:
 #     data = hdul[1].data
@@ -27,19 +27,19 @@ RGal = np.sqrt(x**2 + y**2 + z**2)
 def linear_fit(x, a, b):
     return a * x + b
 
-# Fit the data
+# Fit data with linear fitting
 popt, pcov = curve_fit(linear_fit, RGal, ao)
 slope, intercept = popt
 slope_uncertainty, intercept_uncertainty = np.sqrt(np.diag(pcov))
 
-# Calculate the linear fit and residuals
+# Calculate the linear fit and residuals as usual
 fitted_ao = linear_fit(RGal, *popt)
 residuals = ao - fitted_ao
 
-# Plot 2-panel figure
+# Plot the 2-panel figure
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-# (a) Logarithmic density plot of RGal vs A(O), with linear fit and legend
+# (a) Logarithmic density plot of RGal vs A(O), with linear fit and legend, here I am using hex binning for 2D data
 hb = ax1.hexbin(RGal, ao, gridsize=50, cmap='inferno', bins='log')
 ax1.plot(RGal, fitted_ao, color='cyan', linewidth=2, label=f'Fit: A(O) = {slope:.3f} * RGal + {intercept:.3f}')
 ax1.set_xlabel('Galactocentric Radius RGal (kpc)')
@@ -60,7 +60,7 @@ ax2.set_title('Residuals of Linear Fit (RGal vs ∆A(O))')
 fig.savefig(os.path.join(figures_dir, 'radial_metallicity_fit_and_residuals.png'))
 plt.close(fig)
 
-# Statistical metrics: Root Mean Square Error (RMSE)
+# Root Mean Square Error (RMSE)
 rmse = np.sqrt(np.mean(residuals**2))
 
 # Generate 2D histograms for the x vs y plane
@@ -105,13 +105,26 @@ fig.colorbar(im3, ax=axes[2])
 fig.savefig(os.path.join(figures_dir, '2D_histograms_of_metallicity.png'))
 plt.close(fig)
 
-# Output summary of fitting results
-{
+#  summary of fitting results
+print({
     "slope": slope,
     "slope_uncertainty": slope_uncertainty,
     "intercept": intercept,
     "intercept_uncertainty": intercept_uncertainty,
     "rmse": rmse
-}
+})
 
 
+# Calculate the threshold for larger residuals (e.g., residuals greater than one standard deviation)
+residual_std = np.std(residuals)
+threshold = residual_std  # Considering "large residuals" as those beyond one standard deviation
+
+# Select data points with larger residuals
+large_residuals_indices = np.abs(residuals) > threshold
+RGal_large_residuals = RGal[large_residuals_indices]
+ao_large_residuals = ao[large_residuals_indices]
+fitted_ao_large_residuals = fitted_ao[large_residuals_indices]
+
+# Calculate RMSE for regions with larger residuals
+rmse_large_residuals = np.sqrt(np.mean((ao_large_residuals - fitted_ao_large_residuals) ** 2))
+print("RMSE for regions with larger residuals:", rmse_large_residuals)

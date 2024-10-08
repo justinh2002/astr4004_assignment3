@@ -54,6 +54,8 @@ ax1.scatter(bp_rp, filtered_df['absolute_g'], color='blue')
 ax1.set_xlabel('BP - RP')
 ax1.set_ylabel('Absolute G Magnitude')
 ax1.set_title('Color-Magnitude Diagram (Gaia)')
+ax1.invert_yaxis()
+
 
 # (b) 2MASS J-Ks vs. apparent Ks magnitude
 j_ks = filtered_df['j_m'] - filtered_df['ks_m']
@@ -62,6 +64,8 @@ ax2.scatter(j_ks, filtered_df['ks_m'], color='green')
 ax2.set_xlabel('J - Ks')
 ax2.set_ylabel('Apparent Ks Magnitude')
 ax2.set_title('2MASS J-Ks vs. Apparent Ks Magnitude')
+ax2.invert_yaxis()
+
 
 # Ensure 'figures' directory exists and save the figure
 os.makedirs('figures', exist_ok=True)
